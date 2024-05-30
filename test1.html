@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Menu</title>
+    <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+<div id="menu-app">
+    <div v-for="menu in menuData" :key="menu.label">
+        <div class="pcoded-navigation-label" menu-title-theme="theme1">
+            {{ menu.title }}
+        </div>
+        <ul class="pcoded-item pcoded-left-item">
+            <li :class="{'pcoded-hasmenu': menu.hasSubmenu, 'active': menu.active && menu.hasSubmenu}"
+                @click="menu.hasSubmenu && toggle(menu)">
+                <a :href="menu.link" class="waves-effect waves-dark">
+                    <span class="pcoded-micon">
+                        <i :class="menu.icon"></i><b>{{ menu.abbreviation }}</b>
+                    </span>
+                    <span class="pcoded-mtext">{{ menu.label }}</span>
+                    <span class="pcoded-mcaret" v-if="menu.hasSubmenu"></span>
+                </a>
+                <ul v-if="menu.hasSubmenu && menu.expanded" class="pcoded-submenu">
+                    <li v-for="item in menu.items" :key="item.text" :class="{ 'active': item.active }">
+                        <a :href="item.link" class="waves-effect waves-dark">
+                            <span class="pcoded-micon"><i :class="item.icon"></i></span>
+                            <span class="pcoded-mtext">{{ item.text }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    const { createApp, ref } = Vue;
+    createApp({
+        setup() {
+            const menuData = ref([
+                {
+                    title: "UI Element",
+                    label: 'Basic',
+                    icon: 'ti-layout-grid2-alt',
+                    abbreviation: 'BC',
+                    expanded: false,
+                    hasSubmenu: true,
+                    active: true,
+                    items: [
+                        {
+                            text: 'Breadcrumbs',
+                            link: 'breadcrumb',
+                            icon: 'ti-angle-right',
+                            active: false
+                        },
+                        {
+                            text: 'Button',
+                            link: 'button',
+                            icon: 'ti-angle-right',
+                            active: false
+                        }
+                        // More items...
+                    ]
+                },
+                {
+                    title: "Home",
+                    label: 'Dashboard',
+                    icon: 'ti-home',
+                    abbreviation: 'D',
+                    link: 'index',
+                    active: false,
+                    hasSubmenu: false
+                }
+                // More menus...
+            ]);
+
+            function toggle(menu) {
+                if (menu.hasSubmenu) {
+                    menu.expanded = !menu.expanded;
+                }
+            }
+
+            return { menuData, toggle }
+        }
+    }).mount('#menu-app');
+</script>
+</body>
+</html>
